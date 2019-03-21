@@ -20,7 +20,7 @@ How to
 
 콘솔창에 질문이 나오면 대답은 번호만 입력해주면 됩니다
 - Is it OK to write this file here? (answer : For sure)  
-- Shall we delete the ZIP file '/Users/Benjamin/Desktop/chapter1-intro-master.zip'? (answer : Yup)
+- Shall we delete the ZIP file '/Users/Benjamin/Desktop/chapter3-intro-master.zip'? (answer : Yup)
 
 ```
 # 최초 한번만 설치
@@ -31,5 +31,5 @@ library(usethis)
 use_course("https://github.com/isc-visualization-2019/chapter03_190323/archive/master.zip")
 
 # 방법2
-usethis::use_course("https://github.com/isc-visualization-2019/chapter02_190316/archive/master.zip")
+usethis::use_course("https://github.com/isc-visualization-2019/chapter03_190323/archive/master.zip")
 ```
