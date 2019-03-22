@@ -1,27 +1,183 @@
 #-------------------------------------------------------------------------------------
-# 모든 챕터는 실습 코드 첨부할 것
+# 모든 챕터는 실습 코드 첨부
 # for, while 등 반복문
 # if, if_else
 # function()
-# gather, spread
+#-------------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------------
+# for 반복문
+#-------------------------------------------------------------------------------------
+
+# 일단 콘솔에 찍어보기
+for (i in 1:10) {
+    print(i)
+    Sys.sleep(1.0)
+}
+
+# 반복문을 돌려 연산한 값을 새로운 변수에 넣어보자
+for (k in 1:10) {
+    result <- k + 5
+    print(result)
+    Sys.sleep(1.0)
+}
+
+# 결과에 넣어주려면 placeholder 역할 벡터가 필요
+result.final <- c()
+for (q in 1:10) {
+    result <- q + 5
+    
+    # 벡터의 결합 방식 떠올려보기
+    result.final <- c(result.final, result)
+}
+print(result.final)
+
+# 퀴즈1 : 아래의 결과는 무엇?
+x <- c(2,5,3,9,8,11,6)
+count <- 0
+
+for (val in x) {
+    if(val %% 2 == 0) {
+        count <- count+1
+    }}
+
+
+#-------------------------------------------------------------------------------------
+# while 반복문 : 조건이 참이면 반복문을 실행
+# for는 반복 횟수를 정확하게 알아야 하고 while은 모를때 활용하면 좋다
+#-------------------------------------------------------------------------------------
+i <- 1
+while (i < 6) {
+    print(i)
+    i <- i+1
+}
+
+while (i) {
+    test <- i * 5
+    print(test)
+    if(test >= 20) break
+    i <- i + 1
+}
+
+i <- 0
+while (i >= 9){
+    i <- i + 1
+    if (i %% 2 == 0){
+        next
+    }
+    print (i)
+    
+}
+
+#-------------------------------------------------------------------------------------
+# if 조건문
+#-------------------------------------------------------------------------------------
+check <- 0
+if(check == 1){
+    print ("check의 값은 TRUE입니다. ")
+}else{
+    print ("check의 값은 TRUE가 아닙니다.")
+}
+
+
+
+y <- c(100, -50, 5, 3, 21, -2)
+
+for (t in seq_along(y)) {
+    if(y[t] < 0){
+        y[t] <- as.numeric(str_remove(y[t], "-"))
+    }
+    print(y[t])
+}
+
+
+#-------------------------------------------------------------------------------------
+# if_else 조건문
+#-------------------------------------------------------------------------------------
+ifelse(1 == TRUE, "Yes", "No")
+
+x <- 1:10
+ifelse(x %% 2 == 0, "짝수", "홀수")
+
+#-------------------------------------------------------------------------------------
+# function의 이해
+#-------------------------------------------------------------------------------------
+
+f <- function(x, y){
+    z <- x + y
+    return (z)
+}
+
+f1 <- function(x, y){
+    z <- x + y
+    z
+}
+
+# 날짜를 넣으면 요일을 반환해주는 함수 만들어보기
+dday <- function(d){
+    diffs <- lubridate::today() - as.Date(d)
+    return(diffs)
+}
+dday("2019-02-23")
+mydates <- c("2018-04-25", "2017-05-24", "2002-06-12", "1999-12-31", "2018-09-12", "2005-04-15", "2011-12-25", "2007-11-23")
+
+
+# for 반복문
+for(i in mydates){
+    diffs <- lubridate::today() - as.Date(i)
+    print(diffs)
+}
+
+# lapply 함수
+lapply(c("2018-04-25", "2017-05-24", "2002-06-12"), dday)
+
+
+#-------------------------------------------------------------------------------------
+# Tidy data : count, gather, spread
 # Tidyverse : select, filter, mutate, arrange, group_by, summarise
 #-------------------------------------------------------------------------------------
 
-library(tidyverse)
+# count 함수는 해당 변수의 value 갯수를 세어준다
+iris %>% 
+    count(Species)
 
+names(mpg)
+mpg %>% 
+    count(cyl, sort = T)
 
-#########################################
+#-------------------------------------------------------------------------------------
+# Tame data vs Tidy data
+# 생각해 볼 것!
+# 아래 데이터 시각화 어떻게? x축에 출석과 결석 y축에 횟수를 막대 그래프로!
+#-------------------------------------------------------------------------------------
+df_tm <- tibble(
+    name = c("금진섭", "김해수", "임채민", "박혜준", "장해중", "배여운", "김중앙"),
+    day1 = c("출석", "결석", "출석", "결석", "출석", "결석", "출석"),
+    day2 = c("결석", "출석", "출석", "결석", "출석", "출석", "출석"),
+    day3 = c("결석", "결석", "결석", "결석", "출석", "출석", "결석"),
+    day4 = c("출석", "출석", "출석", "출석", "출석", "결석", "출석"),
+    day5 = c("결석", "결석", "출석", "출석", "결석", "출석", "출석"),
+    day6 = c("결석", "결석", "출석", "출석", "결석", "출석", "출석"),
+    day7 = c("결석", "결석", "결석", "출석", "출석", "결석", "결석"),
+    day8 = c("결석", "결석", "출석", "출석", "결석", "출석", "출석"),
+    day9 = c("결석", "출석", "출석", "출석", "결석", "결석", "출석")
+)
+
+df_tm2 <- gather(df_tm, "category", "value", contains("day"))
+ggplot(df_tm2, aes(x = value)) +
+    geom_bar()
+
+df_tm3 <- df_tm2 %>%
+    count(name, value)
+
+ggplot(df_tm3, aes(x = name, y = n, fill = fct_relevel(value, "출석", "결석"))) +
+    geom_col(position = "dodge")
+
+#-------------------------------------------------------------------------------------
 ## 데이터 가져오기
-#########################################
+#-------------------------------------------------------------------------------------
 
-# Google Spreadsheet에서 가져오기
-# https://docs.google.com/spreadsheets/d/e/2PACX-1vRgV6xzWwwgjKthRQuPmc-WPCOHOvZfRkAjzOHC38UhkpLsfS4rjCGVM9AH7FMEgsLk5FncY9PhugFT/pub?gid=1014557408&single=true&output=csv
-
-# 방법1
-patient_df <- read.csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vRgV6xzWwwgjKthRQuPmc-WPCOHOvZfRkAjzOHC38UhkpLsfS4rjCGVM9AH7FMEgsLk5FncY9PhugFT/pub?gid=1014557408&single=true&output=csv", stringsAsFactors = FALSE, fileEncoding = "utf-8")
-
-# 방법2
-patient_df <- read.csv("patient.csv", stringsAsFactors = F, fileEncoding = "utf-8")
+patient_df <- read_csv("data/patient.csv")
 
 # 구조 확인
 str(patient_df)
@@ -31,12 +187,11 @@ summary(patient_df)
 
 # 미리보기 
 head(patient_df)
-lapply(patient_df, is.numeric) #이건 지금 알 필요는 없음
+map_chr(patient_df, is.numeric)
 
-
-#########################################
+#-------------------------------------------------------------------------------------
 ## 데이터 정제해보기
-#########################################
+#-------------------------------------------------------------------------------------
 
 # 칼럼이름 변경하기 (고혈압, 당뇨, 이상지질혈증, 폐결핵)
 colnames(patient_df) <- c("year", "gu", "gender", "real_patient", "hypertension", "diabetes", "dyslipidemia", "tuberculosis")
@@ -99,19 +254,3 @@ patient_df.tidy2 <- gather(patient_df, key = "category", value = "patient_count"
 # spread로 다시 wide형
 spread(patient_df.tidy, category, patient_count)
 
-#########################################
-## 직접해보기
-# 1. 데이터 가져오기
-# 2. 컬럼이름 영문으로 변경하기
-# 3. 숫자로 변환해보기
-# 4. tidy 데이터로 변환해보기
-# 5. 다시 wide로 변환해보기 (다른 변수에 저장)
-# 6. tidy 데이터 중 month를 강남구의 11월, 12월만 추출
-# 7. write.csv로 csv 파일로 저장하기
-#########################################
-
-# https://docs.google.com/spreadsheets/d/e/2PACX-1vQVSDG9-3h2u7_KAk4C_g4Vc50PxM1aXxqZ4w6G4f3dpdObmla4lCqDRLMZEE6bBtpTZL4lK57wkWHR/pub?gid=1581715057&single=true&output=csv
-
-# 혹은 budongsan.csv로 활용
-
-########### 아래에 코드를 작성해보세요 #############
