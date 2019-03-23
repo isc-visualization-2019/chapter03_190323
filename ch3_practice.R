@@ -38,8 +38,7 @@ test <- rnorm(1000)
 # 3. 숫자로 변환해보기
 # 4. tidy 데이터로 변환해보기
 # 5. 다시 wide로 변환해보기 (다른 변수에 저장)
-# 6. tidy 데이터 중 month를 강남구의 11월, 12월만 추출
-# 7. write.csv로 csv 파일로 저장하기
+# 6. write.csv로 csv 파일로 저장하기
 # https://docs.google.com/spreadsheets/d/e/2PACX-1vQVSDG9-3h2u7_KAk4C_g4Vc50PxM1aXxqZ4w6G4f3dpdObmla4lCqDRLMZEE6bBtpTZL4lK57wkWHR/pub?gid=1581715057&single=true&output=csv
 # 혹은 budongsan.csv로 활용
 #-------------------------------------------------------------------------------------

@@ -189,68 +189,34 @@ summary(patient_df)
 head(patient_df)
 map_chr(patient_df, is.numeric)
 
-#-------------------------------------------------------------------------------------
-## 데이터 정제해보기
-#-------------------------------------------------------------------------------------
-
 # 칼럼이름 변경하기 (고혈압, 당뇨, 이상지질혈증, 폐결핵)
 colnames(patient_df) <- c("year", "gu", "gender", "real_patient", "hypertension", "diabetes", "dyslipidemia", "tuberculosis")
 
 # 다시 확인
 head(patient_df)
 
-# 문자형을 숫자형으로 변환해주기
-as.numeric(patient_df$diabetes)
-
-# 쉼표 없애주기 4열부터 8열까지 반복을 피하기 위해 for문을 배워보자
-patient_df[,4] <- str_replace_all(patient_df[,4], ",", "")
-patient_df[,4] <- as.numeric()
-
-patient_df[,5] <- str_replace_all(patient_df[,5], ",", "")
-patient_df[,5] <- as.numeric()
-
-patient_df[,6] <- str_replace_all(patient_df[,6], ",", "")
-patient_df[,6] <- as.numeric()
-
-patient_df[,7] <- str_replace_all(patient_df[,7], ",", "")
-patient_df[,7] <- as.numeric()
-
-patient_df[,8] <- str_replace_all(patient_df[,8], ",", "")
-patient_df[,8] <- as.numeric()
-
-# for 반복문
-for (i in 4:8) {
-    patient_df[,i] <- str_replace_all(patient_df[,i], ",", "")
-    patient_df[,i] <- as.numeric(patient_df[,i])
-}
-
-# row 중에 합계는 필터링 해주기 1
-patient_df[which(patient_df$gender != "합계") , ]
-
-# row 중에 합계는 필터링 해주기 2
-subset(patient_df, gender != "합계")
-
-# row 중에 합계는 필터링 해주기 3
-patient_df %>% 
-    filter(gender != "합계")
-
-# 조금 더 알아보기 (복수의 조건)
-a <- patient_df[which(patient_df$hypertension > 6000 |patient_df$real_patient > 6000) , ]
-b <- patient_df[which(patient_df$gender != "합계" & patient_df$real_patient > 3000) , ]
-
-a1 <- subset(patient_df, hypertension > 6000 | real_patient > 6000)
-b1 <- subset(patient_df, gender != "합계" & real_patient > 3000)
-
-a2 <- patient_df %>% 
-    filter(hypertension > 6000 | real_patient > 6000)
-b2 <- patient_df %>% 
-    filter(gender != "합계" & real_patient > 3000)
-
 # gather 함수로 모아보기
-head(patient_df)
 patient_df.tidy <- gather(patient_df, key = "category", value = "patient_count", 4:8)
 patient_df.tidy2 <- gather(patient_df, key = "category", value = "patient_count", real_patient:tuberculosis)
 
 # spread로 다시 wide형
 spread(patient_df.tidy, category, patient_count)
 
+# 다른 사례로 연습해보기
+# UN 인구예측 데이터 scraping
+install.packages("rvest", dependencies = T)
+library(rvest)
+
+df.pop <- read_html("https://en.wikipedia.org/wiki/World_population") %>% 
+    html_table(fill = TRUE)
+
+df.pop2 <- df.pop[[13]]
+df.pop2 <- df.pop2 %>% 
+    gather("category", "value", -1) %>% 
+    mutate(value = str_remove(value, "\\(.+\\)"),
+           value = as.numeric(str_remove(value, ",")))
+
+ggplot(df.pop2, aes(x = Year, y = value, group = category, color = category)) +
+    geom_line()
+
+df.pop2 %>% spread(category, value)
